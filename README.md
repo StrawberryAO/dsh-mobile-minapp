@@ -91,12 +91,49 @@ DSH 远程网关所用的 cpolar / tailscale 域名都不满足 → **正式版�
     packageChat/pages/chat/           对话页（独立分包）
     components/prompt-dialog/         问询 / 审批弹窗组件
 
+## 架构
+
+分层（自底向上）：
+
+    services/websocket.js   物理连接层：wx.connectSocket + 心跳 + 指数退避重连；
+                            单连接上多路复用逻辑流（open/streamId/endpoint/item/end/error 帧）
+    services/rpc.js         HTTP JSON-RPC 层：/api/{namespace}/{method} 信封 + Cookie/CSRF 头；
+                            session / workspace 便捷封装（wire 参数名兼容）
+    services/config.js      持久化层：仅远程配置（remoteUrl + 会话/设备令牌）
+    stores/chat.js          状态层：会话列表 / 当前会话消息 / 流式追加 / ask·approval；
+                            持有并注册 $events、session/control、session/follow 三个逻辑流
+    pages/ + packageChat/   视图层：connect（配对）→ index（会话列表）→ chat（对话）
+    components/prompt-dialog/  审批/问询弹窗（经全局 eventBus 触发）
+
+关键数据流：
+
+1. 配对：粘贴分享链接 → native-pair（HTTP）→ 存 Cookie / CSRF / deviceToken
+2. 连接：wx.connectSocket 到 /api/remote.mux，带 Origin + Cookie
+3. 会话：session/list（HTTP）列列表；打开会话注册 session/follow
+   → 服务器推 snapshot（最近 20 条）+ 实时事件（text-delta / reasoning 等）
+4. 发送：session/prompt（HTTP，queue 模式）→ 回复以 follow 事件流式返回
+5. 审批：$events 流 waterfall → prompt-dialog 弹窗 → $events/result 回投
+
+协议细节对照 docs/protocol.md 与 types/protocol.d.ts。
+
 ## 使用步骤（快速版）
 
 1. 电脑启动 DSH Desktop，开启 dsh-mobile「移动访问 → 远程访问」，取得当前分享链接。
 2. 微信开发者工具导入本目录，勾选「不校验合法域名」，编译运行。
 3. 连接页粘贴分享链接 → 配对 → 进入首页对话。
 4. 真机：真机调试 / 预览 + 开发调试（见上）。
+
+## Roadmap
+
+- [ ] 修复「真机经第三方隧道 HTTP RPC 超时 → 看不到历史会话」（微信真机网络层到 ts.net/cpolar 的 POST 行为）
+- [ ] 正式版发布向导：自有 ICP 备案域名 + dsh-mobile vps-deploy / 自托管 FRP 的图文指引
+- [ ] 桌面端扫码配对（扫 DSH 面板二维码直接进入，免手输长链接）
+- [ ] 会话搜索 UI（session/search 已封装）
+- [ ] 会话归档 / 删除 UI（workspace/archiveSession、workspace/delete 已封装）
+- [ ] 历史图片消息缩略图（session/attachment）
+- [ ] Markdown 增强：表格 / 行内代码高亮
+- [ ] 长按复制消息、消息时间分组
+- [ ] 断线恢复对齐：follow 游标续传，避免重连后消息错位
 
 ## 技术要点
 
