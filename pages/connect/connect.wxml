@@ -4,47 +4,12 @@
     <view class="hero-sub">连接你的 DeepSeek Harness 桌面端</view>
   </view>
 
-  <view class="mode-tabs">
-    <view class="mode-tab {{mode === 'lan' ? 'active' : ''}}" data-mode="lan" bindtap="onSwitchMode">局域网</view>
-    <view class="mode-tab {{mode === 'remote' ? 'active' : ''}}" data-mode="remote" bindtap="onSwitchMode">远程</view>
-  </view>
-
-  <!-- 局域网 -->
-  <view class="card" wx:if="{{mode === 'lan'}}">
-    <view class="field">
-      <view class="label">服务器 IP</view>
-      <input class="input" type="text" placeholder="请输入服务器 IP" placeholder-class="ph"
-        value="{{serverIp}}" bindinput="onIpInput" />
-    </view>
-
-    <view class="field">
-      <view class="label">端口</view>
-      <input class="input" type="number" placeholder="请输入端口" placeholder-class="ph"
-        value="{{serverPort}}" bindinput="onPortInput" />
-    </view>
-
-    <view class="field row">
-      <view class="label">使用 HTTPS/WSS</view>
-      <switch checked="{{useTls}}" bindchange="onTlsChange" color="#2f6fed" />
-    </view>
-  </view>
-
-  <!-- 远程 -->
-  <view class="card" wx:else>
+  <view class="card">
     <view class="field">
       <view class="label">配对链接</view>
       <input class="input" type="text" maxlength="-1" value="{{remoteUrl}}" bindinput="onRemoteUrlInput" />
     </view>
     <view class="hint">粘贴 DSH 桌面端「远程访问」面板复制的链接即可，域名与 token= 后的密钥会自动识别。</view>
-  </view>
-
-  <view class="card" wx:if="{{mode === 'lan'}}">
-    <view class="field">
-      <view class="label">配对密钥 / Token</view>
-      <input class="input" type="text" password maxlength="-1" placeholder="DSH 桌面端「移动访问」面板生成" placeholder-class="ph"
-        value="{{token}}" bindinput="onTokenInput" />
-    </view>
-    <view class="hint">首次连接需填写配对密钥；已配对过可留空直接连接。</view>
   </view>
 
   <view class="error" wx:if="{{error}}">{{error}}</view>

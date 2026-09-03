@@ -1,12 +1,9 @@
-// services/config.js —— 连接配置持久化
+// services/config.js —— 连接配置持久化（仅远程模式）
 const STORAGE_KEY = 'dsh_connection_config';
 
 /** 默认配置结构 */
 function defaultConfig() {
   return {
-    serverIp: '',       // 服务器 IP
-    serverPort: '',     // 端口
-    useTls: false,      // 是否 HTTPS/WSS
     sessionToken: '',   // 配对后拿到，用作 Cookie dsh_ma_session
     csrfToken: '',      // 用作 HTTP 头 x-dsh-mobile-csrf
     deviceToken: '',    // 用于续期
@@ -14,7 +11,6 @@ function defaultConfig() {
     instanceId: '',
     sessionExpiresAt: 0,
     deviceExpiresAt: 0,
-    mode: 'lan',        // 'lan' | 'remote'
     remoteUrl: '',      // 远程公网 HTTPS 地址（如 https://xxx.ts.net）
     label: '微信小程序',
   };
@@ -38,23 +34,7 @@ function clearConfig() {
 function isConnected(cfg) {
   cfg = cfg || getConfig();
   if (!cfg || !cfg.sessionToken) return false;
-  if (cfg.mode === 'remote') return !!cfg.remoteUrl;
-  return !!(cfg.serverIp && cfg.serverPort);
-}
-
-/**
- * 规范化主机地址：剥离用户可能误填的协议前缀（http://、https://、ws://、wss://）、
- * 前后空格、路径与查询，只保留 host（IP 或域名）。
- */
-function normalizeHost(host) {
-  if (!host) return '';
-  let h = String(host).trim();
-  const proto = h.indexOf('://');
-  if (proto >= 0) h = h.slice(proto + 3);   // 去掉 scheme://
-  const slash = h.indexOf('/');
-  if (slash >= 0) h = h.slice(0, slash);     // 去掉路径/查询
-  h = h.replace(/[:/]+$/, '');               // 去掉尾随 : 或 /
-  return h.trim();
+  return !!cfg.remoteUrl;
 }
 
 /**
@@ -72,25 +52,19 @@ function normalizeRemoteUrl(url) {
   return u.replace(/\/+$/, '');
 }
 
-/** HTTP 基础地址，如 http://192.168.1.10:8765 或 https://xxx.ts.net */
+/** HTTP 基础地址，如 https://xxx.ts.net */
 function baseUrl(cfg) {
   cfg = cfg || getConfig();
   if (!cfg) return '';
-  if (cfg.mode === 'remote') return normalizeRemoteUrl(cfg.remoteUrl);
-  const scheme = cfg.useTls ? 'https' : 'http';
-  return scheme + '://' + normalizeHost(cfg.serverIp) + ':' + cfg.serverPort;
+  return normalizeRemoteUrl(cfg.remoteUrl);
 }
 
-/** WebSocket 基础地址，如 ws://192.168.1.10:8765 或 wss://xxx.ts.net */
+/** WebSocket 基础地址，如 wss://xxx.ts.net */
 function wsBaseUrl(cfg) {
   cfg = cfg || getConfig();
   if (!cfg) return '';
-  if (cfg.mode === 'remote') {
-    const base = normalizeRemoteUrl(cfg.remoteUrl);
-    return base ? base.replace(/^https:/, 'wss:') : '';
-  }
-  const scheme = cfg.useTls ? 'wss' : 'ws';
-  return scheme + '://' + normalizeHost(cfg.serverIp) + ':' + cfg.serverPort;
+  const base = normalizeRemoteUrl(cfg.remoteUrl);
+  return base ? base.replace(/^https:/, 'wss:') : '';
 }
 
 /** 网关信任所需的 Origin 头。
@@ -117,5 +91,5 @@ function authHeaders(cfg) {
 
 module.exports = {
   defaultConfig, getConfig, saveConfig, clearConfig,
-  isConnected, normalizeHost, normalizeRemoteUrl, baseUrl, wsBaseUrl, trustHeaders, authHeaders, STORAGE_KEY,
+  isConnected, normalizeRemoteUrl, baseUrl, wsBaseUrl, trustHeaders, authHeaders, STORAGE_KEY,
 };

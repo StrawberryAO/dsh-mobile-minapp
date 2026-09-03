@@ -45,11 +45,11 @@ class DshWebSocket {
 
   /** 建立（或重建）物理连接 */
   connect(cfg) {
-    const hasAddress = cfg && (cfg.mode === 'remote' ? !!cfg.remoteUrl : !!(cfg.serverIp && cfg.serverPort));
+    const hasAddress = cfg && !!cfg.remoteUrl;
     console.log('[debug] ws connect cfg=', JSON.stringify(cfg), '| hasAddress=', hasAddress, '| url=', wsBaseUrl(cfg));
     if (!hasAddress) {
       this._setStatus('closed');
-      return Promise.reject({ code: 'no_config', message: '缺少服务器地址' });
+      return Promise.reject({ code: 'no_config', message: '缺少远程地址' });
     }
     this.cfg = cfg;
     this.manuallyClosed = false;
