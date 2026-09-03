@@ -165,6 +165,15 @@ const store = {
     if (!this._cfg) return Promise.resolve([]);
     return sessionApi.list(this._cfg).then((value) => {
       const items = (value && value.items) || [];
+      try {
+        const first = items[0] || {};
+        console.log('[chat] session/list keys=', Object.keys(value || {}).join(','),
+          '| items=', items.length,
+          '| first=', JSON.stringify({
+            sessionId: first.sessionId, title: first.title, blank: first.blank,
+            cwd: first.cwd, workspaceId: first.workspaceId,
+          }).slice(0, 220));
+      } catch (e) { /* ignore */ }
       this.state.sessions = items.map((it) => this._normalizeSummary(it));
       this._persistSessions();
       this.notify();
