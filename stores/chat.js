@@ -108,7 +108,7 @@ const store = {
     return this._ws.connect(this._cfg).then(() => {
       this.state.connected = true;
       this._ensureStreams();
-      this.loadSessions();
+      this.loadSessions().catch(() => {});
       this.notify();
     });
   },
@@ -163,7 +163,8 @@ const store = {
   /* ============ 会话列表 ============ */
   loadSessions() {
     if (!this._cfg) return Promise.resolve([]);
-    return sessionApi.list(this._cfg).then((value) => {
+    // 真机网络（ts.net/cpolar）偶发超时：指数退避自动重试 3 次
+    const attempt = (left) => sessionApi.list(this._cfg).then((value) => {
       const items = (value && value.items) || [];
       try {
         const first = items[0] || {};
@@ -179,10 +180,16 @@ const store = {
       this.notify();
       return this.state.sessions;
     }).catch((err) => {
+      if (left > 0) {
+        const delay = [0, 800, 2400][3 - left] || 4000;
+        console.warn('[chat] loadSessions retry left=' + left, err);
+        return new Promise((resolve) => setTimeout(resolve, delay)).then(() => attempt(left - 1));
+      }
       console.error('[chat] loadSessions failed', err);
       this.notify();
       throw err;
     });
+    return attempt(3);
   },
 
   _normalizeSummary(it) {
