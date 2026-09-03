@@ -51,6 +51,11 @@
 }
 .input {
   width: 100%;
+  /* 显式加高：原默认约 34px(iPhone6)，现 80rpx≈40px（高约 6px），文字/占位完整垂直居中 */
+  height: 80rpx;
+  line-height: 80rpx;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .ph {
   color: #555c66;
