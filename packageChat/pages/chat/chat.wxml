@@ -30,7 +30,7 @@
           </view>
         </view>
 
-        <view class="bubble assistant" wx:if="{{item.nodes.length > 0}}">
+        <view class="bubble assistant" wx:if="{{item.html}}">
           <rich-text nodes="{{item.html}}"></rich-text>
           <text class="cursor" wx:if="{{item.status === 'streaming'}}">▍</text>
         </view>
