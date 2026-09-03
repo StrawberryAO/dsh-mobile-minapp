@@ -1,0 +1,77 @@
+/* app.wxss —— 全局样式 */
+page {
+  background: #14161a;
+  color: #e6e6e6;
+  font-size: 28rpx;
+  line-height: 1.6;
+  height: 100%;
+}
+
+view, text, input, textarea, button, scroll-view {
+  box-sizing: border-box;
+}
+
+button {
+  padding: 0;
+  margin: 0;
+  background: none;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+button::after { border: none; }
+
+/* 通用卡片 */
+.card {
+  background: #1f2328;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin: 16rpx 24rpx;
+}
+
+/* 主按钮 */
+.btn-primary {
+  background: #2f6fed;
+  color: #fff;
+  border-radius: 12rpx;
+  text-align: center;
+  padding: 20rpx 32rpx;
+  font-size: 30rpx;
+}
+.btn-primary:active { opacity: 0.85; }
+
+/* 次要按钮 */
+.btn-secondary {
+  background: #2a2f36;
+  color: #e6e6e6;
+  border-radius: 12rpx;
+  text-align: center;
+  padding: 20rpx 32rpx;
+  font-size: 30rpx;
+}
+
+/* 输入框 */
+.input {
+  background: #14161a;
+  border: 1rpx solid #333a44;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  color: #e6e6e6;
+  font-size: 28rpx;
+}
+
+/* 空态 */
+.empty {
+  text-align: center;
+  color: #8a919c;
+  padding: 80rpx 40rpx;
+  font-size: 26rpx;
+}
+
+/* 加载中 */
+.loading {
+  text-align: center;
+  color: #8a919c;
+  padding: 40rpx;
+  font-size: 24rpx;
+}

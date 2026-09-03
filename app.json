@@ -1,0 +1,28 @@
+{
+  "pages": [
+    "pages/connect/connect",
+    "pages/index/index"
+  ],
+  "subpackages": [
+    {
+      "root": "packageChat",
+      "pages": [
+        "pages/chat/chat"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#1f2328",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "DSH Mobile",
+    "backgroundColor": "#14161a",
+    "backgroundTextStyle": "light",
+    "enablePullDownRefresh": false
+  },
+  "usingComponents": {
+    "prompt-dialog": "/components/prompt-dialog/prompt-dialog"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

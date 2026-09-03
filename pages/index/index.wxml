@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="header">
+    <view class="header-title">会话</view>
+    <view class="header-status {{connected ? 'ok' : ''}}">
+      {{connecting ? '连接中…' : (connected ? '已连接' : '未连接')}}
+    </view>
+  </view>
+
+  <view class="toolbar">
+    <button class="btn-secondary toolbar-btn" bindtap="onSettings" size="mini">连接设置</button>
+    <button class="btn-primary toolbar-btn" bindtap="onNewSession" size="mini">+ 新建会话</button>
+  </view>
+
+  <view class="list" wx:if="{{sessions.length > 0}}">
+    <view class="item" wx:for="{{sessions}}" wx:key="sessionId"
+      data-id="{{item.sessionId}}" bindtap="onOpenSession">
+      <view class="item-main">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-meta">
+          {{item.running ? '生成中 · ' : ''}}{{item.updatedAtText}}
+        </view>
+      </view>
+      <view class="item-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <view>暂无会话</view>
+    <view class="empty-sub">点击右上角「新建会话」开始对话</view>
+  </view>
+</view>

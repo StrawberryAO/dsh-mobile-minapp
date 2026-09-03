@@ -1,0 +1,39 @@
+<view class="mask" wx:if="{{visible}}" catchtouchmove="true">
+  <view class="dialog">
+    <!-- approval 审批 -->
+    <block wx:if="{{kind === 'approval'}}">
+      <view class="dialog-title">审批请求</view>
+      <view class="dialog-body">
+        <view class="approval-tool">工具：{{toolName}}</view>
+        <view class="approval-reason" wx:if="{{reason}}">{{reason}}</view>
+      </view>
+      <view class="dialog-actions">
+        <button class="btn-secondary action" bindtap="onReject">拒绝</button>
+        <button class="btn-primary action" bindtap="onApprove">允许一次</button>
+      </view>
+    </block>
+
+    <!-- ask 问询 -->
+    <block wx:else>
+      <view class="dialog-title">需要确认</view>
+      <view class="dialog-body">
+        <view class="question" wx:for="{{questions}}" wx:for-item="q" wx:for-index="qi" wx:key="id">
+          <view class="question-header" wx:if="{{q.header}}">{{q.header}}</view>
+          <view class="question-text">{{q.question}}</view>
+          <view class="question-options">
+            <view class="option {{o.selected ? 'selected' : ''}}"
+              wx:for="{{q.options}}" wx:for-item="o" wx:for-index="oi" wx:key="label"
+              data-qi="{{qi}}" data-oi="{{oi}}" bindtap="onOptionTap">
+              <text class="option-label">{{o.label}}</text>
+              <text class="option-desc" wx:if="{{o.description}}">{{o.description}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="dialog-actions">
+        <button class="btn-secondary action" bindtap="onSkip">跳过</button>
+        <button class="btn-primary action" bindtap="onSubmitAsk">提交</button>
+      </view>
+    </block>
+  </view>
+</view>

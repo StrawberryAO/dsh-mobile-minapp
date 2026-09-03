@@ -1,0 +1,85 @@
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  width: 80%;
+  max-height: 70vh;
+  background: #1f2328;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  overflow-y: auto;
+}
+
+.dialog-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin-bottom: 24rpx;
+}
+
+.dialog-body {
+  margin-bottom: 32rpx;
+}
+
+.approval-tool {
+  font-size: 30rpx;
+  color: #7aa2f7;
+  margin-bottom: 12rpx;
+}
+.approval-reason {
+  font-size: 26rpx;
+  color: #aab1bb;
+}
+
+.question {
+  margin-bottom: 24rpx;
+}
+.question:last-child { margin-bottom: 0; }
+.question-header {
+  font-size: 24rpx;
+  color: #8a919c;
+  margin-bottom: 8rpx;
+}
+.question-text {
+  font-size: 30rpx;
+  margin-bottom: 16rpx;
+}
+.question-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  background: #14161a;
+  border: 2rpx solid #333a44;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+}
+.option.selected {
+  border-color: #2f6fed;
+  background: #1b2740;
+}
+.option-label {
+  font-size: 28rpx;
+}
+.option-desc {
+  font-size: 22rpx;
+  color: #8a919c;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 20rpx;
+}
+.action {
+  flex: 1;
+}

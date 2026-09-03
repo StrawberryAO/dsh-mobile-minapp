@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "对话",
+  "disableScroll": true,
+  "usingComponents": {
+    "prompt-dialog": "/components/prompt-dialog/prompt-dialog"
+  }
+}

@@ -1,0 +1,66 @@
+<view class="page">
+  <view class="navbar">
+    <view class="agent-name">{{agentName}}</view>
+    <view class="navbar-right">
+      <view class="model-btn" bindtap="onOpenModel">模型</view>
+      <view class="agent-status {{statusKind}}" wx:if="{{statusText}}">
+        <view class="dot"></view>{{statusText}}
+      </view>
+    </view>
+  </view>
+
+  <scroll-view class="msg-list" scroll-y scroll-into-view="{{scrollIntoView}}" scroll-with-animation>
+    <view class="msg-item" wx:for="{{messages}}" wx:key="id" id="msg-{{index}}">
+      <!-- 用户消息 -->
+      <view class="bubble user" wx:if="{{item.role === 'user'}}">
+        <rich-text nodes="{{item.html}}"></rich-text>
+      </view>
+
+      <!-- assistant 消息 -->
+      <view class="assistant" wx:else>
+        <view class="reasoning" wx:if="{{item.hasReasoning}}">
+          <view class="reasoning-title">思考过程</view>
+          <rich-text nodes="{{item.reasoningHtml}}"></rich-text>
+        </view>
+
+        <view class="tools" wx:if="{{item.toolCalls.length > 0}}">
+          <view class="tool" wx:for="{{item.toolCalls}}" wx:for-item="tc" wx:key="id">
+            <view class="tool-name">🔧 {{tc.name}}</view>
+            <view class="tool-result" wx:if="{{tc.hasResult}}">{{tc.result}}</view>
+          </view>
+        </view>
+
+        <view class="bubble assistant" wx:if="{{item.nodes.length > 0}}">
+          <rich-text nodes="{{item.html}}"></rich-text>
+          <text class="cursor" wx:if="{{item.status === 'streaming'}}">▍</text>
+        </view>
+        <view class="bubble assistant" wx:elif="{{item.status === 'streaming'}}">
+          <text class="cursor">▍</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="statusbar" wx:if="{{statusText}}">
+    <view class="dot"></view>{{statusText}}
+  </view>
+
+  <view class="pending" wx:if="{{pendingImages.length > 0}}">
+    <view class="pending-item" wx:for="{{pendingImages}}" wx:key="tempPath">
+      <image class="pending-img" src="{{item.tempPath}}" mode="aspectFill" />
+      <view class="pending-remove" data-index="{{index}}" bindtap="onRemoveImage">×</view>
+    </view>
+  </view>
+
+  <view class="composer">
+    <input class="composer-input" value="{{inputValue}}" bindinput="onInput"
+      confirm-type="send" bindconfirm="onSend" placeholder="输入消息…" placeholder-class="composer-ph" />
+    <view class="composer-plus" bindtap="onPickImage">＋</view>
+    <button class="composer-btn {{streaming ? 'stop' : ''}}" bindtap="{{streaming ? 'onStop' : 'onSend'}}">
+      {{streaming ? '停止' : '发送'}}
+    </button>
+  </view>
+
+  <!-- 问询/审批弹窗 -->
+  <prompt-dialog />
+</view>
